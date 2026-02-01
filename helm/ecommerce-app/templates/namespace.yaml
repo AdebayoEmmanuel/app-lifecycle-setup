@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ include "ecommerce-app.namespace" . }}
+  labels:
+    name: {{ include "ecommerce-app.namespace" . }}
+    {{- include "ecommerce-app.labels" . | nindent 4 }}

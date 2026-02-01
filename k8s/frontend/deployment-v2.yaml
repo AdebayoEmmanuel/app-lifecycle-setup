@@ -1,0 +1,159 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-v2
+  namespace: ecommerce
+  labels:
+    app: frontend
+    component: frontend
+    version: v2
+spec:
+  replicas: 0  # Start with 0, scale up for canary
+  selector:
+    matchLabels:
+      app: frontend
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: frontend
+        component: frontend
+        version: v2
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+          name: http
+        
+        # Mount custom nginx config
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+        
+        env:
+        - name: VERSION
+          value: "v2"
+        - name: API_GATEWAY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: service-config
+              key: API_GATEWAY_URL
+        
+        # Resource limits and requests
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+        
+        # Startup probe
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 30
+          timeoutSeconds: 3
+        
+        # Readiness probe
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+          timeoutSeconds: 3
+        
+        # Liveness probe
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 3
+      
+      volumes:
+      - name: html
+        configMap:
+          name: frontend-html-v2
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-html-v2
+  namespace: ecommerce
+  labels:
+    app: frontend
+    version: v2
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>E-Commerce - v2</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 800px;
+                margin: 50px auto;
+                padding: 20px;
+                background: #f5f5f5;
+            }
+            .container {
+                background: white;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            h1 { color: #4CAF50; }
+            .version {
+                background: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 4px;
+                display: inline-block;
+            }
+            .info { margin: 20px 0; }
+            .new-feature {
+                background: #fff3cd;
+                border-left: 4px solid #ffc107;
+                padding: 10px;
+                margin: 10px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🛒 E-Commerce Application</h1>
+            <div class="version">Version 2.0 - NEW!</div>
+            <div class="info">
+                <h2>Welcome to the Enhanced E-Commerce Platform</h2>
+                <p>This is the <strong>Version 2</strong> of our frontend with new features!</p>
+                <div class="new-feature">
+                    <strong>🎉 New in v2:</strong>
+                    <ul>
+                        <li>Improved UI Design</li>
+                        <li>Product Recommendations</li>
+                        <li>Faster Load Times</li>
+                    </ul>
+                </div>
+                <p>Core Features:</p>
+                <ul>
+                    <li>Product Catalog</li>
+                    <li>Shopping Cart</li>
+                    <li>Order Management</li>
+                    <li>Wishlist (New!)</li>
+                </ul>
+            </div>
+        </div>
+    </body>
+    </html>

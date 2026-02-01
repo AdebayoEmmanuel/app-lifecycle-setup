@@ -1,0 +1,180 @@
+# Default values for ecommerce-app
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace:
+  name: ecommerce
+
+# Configuration for ConfigMaps
+config:
+  serviceUrls:
+    productService: "http://product-service:8080"
+    orderService: "http://order-service:8080"
+    apiGateway: "http://api-gateway-active:80"
+  
+  featureFlags:
+    enableCheckout: "true"
+    enableRecommendations: "false"
+    enablePromotions: "true"
+    maintenanceMode: "false"
+    logLevel: "info"
+    cacheTTL: "300"
+    maxItemsPerOrder: "50"
+
+# Secrets (base64 encoded values)
+secrets:
+  apiKeys:
+    productApiKey: "cHJvZHVjdC1hcGkta2V5LTEyMzQ1"
+    orderApiKey: "b3JkZXItYXBpLWtleS02Nzg5MA=="
+    paymentApiKey: "cGF5bWVudC1hcGkta2V5LWFiY2Rl"
+    dbPassword: "ZGF0YWJhc2UtcGFzc3dvcmQtc2VjcmV0"
+
+# Frontend configuration
+frontend:
+  v1:
+    enabled: true
+    replicas: 3
+    image:
+      repository: nginx
+      tag: alpine
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    service:
+      type: NodePort
+      port: 80
+    hpa:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPU: 50
+  
+  v2:
+    enabled: true
+    replicas: 0  # Start with 0 for canary
+    image:
+      repository: nginx
+      tag: alpine
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+# API Gateway configuration
+apiGateway:
+  blue:
+    enabled: true
+    replicas: 3
+    image:
+      repository: nginx
+      tag: alpine
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 300m
+        memory: 256Mi
+  
+  green:
+    enabled: true
+    replicas: 0  # Start with 0 for blue-green
+    image:
+      repository: nginx
+      tag: alpine
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 300m
+        memory: 256Mi
+  
+  active:
+    version: blue  # blue or green
+    service:
+      type: NodePort
+      port: 80
+  
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPU: 60
+
+# Product Service configuration
+productService:
+  enabled: true
+  replicas: 2
+  image:
+    repository: kennethreitz/httpbin
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 80
+
+# Order Service configuration
+orderService:
+  enabled: true
+  replicas: 2
+  image:
+    repository: kennethreitz/httpbin
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 80
+
+# Health check configurations
+healthChecks:
+  startup:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    failureThreshold: 30
+    timeoutSeconds: 3
+  
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+    timeoutSeconds: 3
+  
+  liveness:
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    failureThreshold: 3
+    timeoutSeconds: 3
+
+# Rolling update strategy
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 0

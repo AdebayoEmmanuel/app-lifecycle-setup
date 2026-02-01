@@ -1,0 +1,23 @@
+apiVersion: v2
+name: ecommerce-app
+description: A complete E-Commerce microservices application with advanced deployment strategies
+type: application
+version: 1.0.0
+appVersion: "1.0"
+
+keywords:
+  - ecommerce
+  - microservices
+  - canary
+  - blue-green
+  - kubernetes
+
+maintainers:
+  - name: Your Team Name
+    email: team@example.com
+
+home: https://github.com/yourteam/k8s-ecommerce-lifecycle
+sources:
+  - https://github.com/yourteam/k8s-ecommerce-lifecycle
+
+dependencies: []

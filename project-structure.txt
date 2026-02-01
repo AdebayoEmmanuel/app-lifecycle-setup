@@ -1,0 +1,54 @@
+.
+├── QUICKSTART.md
+├── README.md
+├── SUMMARY.md
+├── docs
+│   ├── ARCHITECTURE.md
+│   └── DEPLOYMENT_GUIDE.md
+├── helm
+│   └── ecommerce-app
+│       ├── Chart.yaml
+│       ├── README.md
+│       ├── templates
+│       └── values.yaml
+├── k8s
+│   ├── api-gateway
+│   │   ├── deployment-blue.yaml
+│   │   ├── deployment-green.yaml
+│   │   ├── hpa.yaml
+│   │   ├── service-active.yaml
+│   │   ├── service-blue.yaml
+│   │   └── service-green.yaml
+│   ├── configmaps
+│   │   ├── feature-flags.yaml
+│   │   └── service-config.yaml
+│   ├── frontend
+│   │   ├── deployment-v1.yaml
+│   │   ├── deployment-v2.yaml
+│   │   ├── hpa.yaml
+│   │   └── service.yaml
+│   ├── namespace.yaml
+│   ├── order-service
+│   │   ├── deployment.yaml
+│   │   └── service.yaml
+│   ├── product-service
+│   │   ├── deployment.yaml
+│   │   └── service.yaml
+│   └── secrets
+│       └── api-keys.yaml
+├── project-structure.txt
+├── scripts
+│   ├── 01-setup-minikube.sh
+│   ├── 02-deploy-all.sh
+│   ├── 03-verify-deployment.sh
+│   ├── 04-canary-rollout.sh
+│   ├── 05-blue-green-switch.sh
+│   ├── 06-rollback.sh
+│   ├── 07-test-hpa.sh
+│   └── 08-cleanup.sh
+└── tests
+    ├── config-test.sh
+    ├── deployment-strategy-test.sh
+    └── health-check-test.sh
+
+14 directories, 38 files

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: feature-flags
+  namespace: ecommerce
+  labels:
+    app: ecommerce
+    component: config
+data:
+  # Feature toggles
+  ENABLE_CHECKOUT: "true"
+  ENABLE_RECOMMENDATIONS: "false"
+  ENABLE_PROMOTIONS: "true"
+  MAINTENANCE_MODE: "false"
+  
+  # Application settings
+  LOG_LEVEL: "info"
+  CACHE_TTL: "300"
+  MAX_ITEMS_PER_ORDER: "50"
