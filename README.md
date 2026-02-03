@@ -149,20 +149,13 @@ kubectl version --client
 helm version
 ```
 
-## Scoring Breakdown (100 Points)
-
-- **Manifests (30 points)**: All Kubernetes YAML files properly configured
-- **Helm Chart (20 points)**: Complete Helm chart packaging
-- **Documentation (20 points)**: Architecture diagram + deployment guide
-- **Demo (20 points)**: Live demonstration of update/rollback
-- **Tests (10 points)**: Scripts to verify deployments
 
 ## Team Members
 
-- [Team Member 1]
-- [Team Member 2]
-- [Team Member 3]
-- [Team Member 4]
+- [@AdebayoEmmanuel](https://github.com/AdebayoEmmanuel)
+- [@Alaswadiyy](https://github.com/alaswadiyy)
+- [@Abdulmuhaimin121](https://github.com/Abdulmuhaimin1219)
+
 
 ## License
 
